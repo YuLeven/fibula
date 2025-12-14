@@ -1,4 +1,5 @@
 # Fibula
+![Project banner](https://github.com/YuLeven/fibula/blob/main/game-screenshot-cropped-16-9-min.png)
 
 **Disclaimer:** Fibula is a Tibia-inspired 3D arena PvP game. It is an independent project and not affiliated with or endorsed by the original Tibia creators or publishers. Any resemblance to Tibia is intentional as inspiration only — Fibula is its own game with distinct mechanics, assets, and network code.
 
@@ -62,4 +63,5 @@ The script will handle building and deploying the site (see the script itself fo
 **Contributing & Contact**
 - If you want to contribute, open issues or pull requests against this repository.
 - For questions about building or deployment, include OS, Unreal Engine commit/branch, and any relevant log excerpts when you open an issue.
+
 
