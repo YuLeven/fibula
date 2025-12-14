@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" class="[scrollbar-gutter:stable]">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content={get_csrf_token()} />
+    <.live_title suffix="">
+      {assigns[:page_title] || "Fibula"}
+    </.live_title>
+     <link rel="preload" href={~p"/fonts/martel.ttf"} as="font" type="font/ttf" crossorigin />
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
+    </script>
+  </head>
+  
+  <body class="bg-stone-900">
+    {@inner_content}
+  </body>
+</html>

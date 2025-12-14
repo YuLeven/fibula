@@ -1,0 +1,157 @@
+<div class="bg-gray-900 min-h-screen">
+  <div class="relative isolate overflow-hidden">
+    <!-- Background gradient effect -->
+    <div class="absolute inset-0 -z-10 bg-gradient-to-b from-gray-900 via-gray-900 to-purple-900">
+    </div>
+    
+    <div class="absolute inset-0 -z-5">
+      <video autoplay loop muted playsinline class="w-full h-full object-cover">
+        <source src={~p"/images/Fibulabackgroundopt.mp4"} type="video/mp4" />
+      </video>
+      
+      <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-stone-900/70 to-stone-900">
+      </div>
+    </div>
+    
+<!-- Hero section with increased z-index -->
+    <div class="relative z-10 mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
+      <div class="mx-auto max-w-2xl">
+        <h1 class="font-martel text-7xl tracking-tight text-amber-500 sm:text-8xl font-bold relative">
+          Fibula
+        </h1>
+        
+        <p class="mt-6 text-lg leading-8 text-gray-200 max-w-sm relative">
+          Enter a world of epic battles where you can challenge players, forge alliances, and become a legend.
+        </p>
+        
+<!-- Download and Discord buttons -->
+        <div class="mt-60 flex items-center justify-center gap-x-6">
+          <div class="relative" x-data="{ open: false }">
+            <button 
+              @click="open = !open" 
+              type="button"
+              class="group relative inline-flex items-center gap-x-2 rounded-xl bg-amber-500 px-12 py-6 text-xl font-semibold text-gray-900 shadow-sm hover:bg-amber-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 transition-all duration-200 hover:scale-105"
+            >
+              <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+              </svg>
+              Play now for free
+              <div class="absolute -inset-1 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 opacity-30 blur transition duration-200 group-hover:opacity-50"></div>
+            </button>
+
+            <div 
+              x-show="open" 
+              x-cloak
+              @click.away="open = false"
+              x-transition:enter="transition ease-out duration-200"
+              x-transition:enter-start="opacity-0 scale-95"
+              x-transition:enter-end="opacity-100 scale-100"
+              x-transition:leave="transition ease-in duration-150"
+              x-transition:leave-start="opacity-100 scale-100"
+              x-transition:leave-end="opacity-0 scale-95"
+              class="absolute left-0 mt-2 w-72"
+            >
+              <div class="rounded-xl bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 p-4 divide-y divide-gray-700">
+                <a href="https://apps.microsoft.com/detail/9njv2l3t3jmt" class="flex items-center gap-4 p-4 hover:bg-gray-700 rounded-lg transition-colors duration-200">
+                  <svg class="h-10 w-10" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M0,0H11.377V11.372H0ZM12.623,0H24V11.372H12.623ZM0,12.623H11.377V24H0Zm12.623,0H24V24H12.623"/>
+                  </svg>
+                  <div>
+                    <div class="font-semibold text-amber-500">Microsoft Store</div>
+                    <div class="text-sm text-gray-400">Windows</div>
+                  </div>
+                </a>
+                <a href="https://fibulapvp.itch.io/fibula" class="flex items-center gap-4 p-4 hover:bg-gray-700 rounded-lg transition-colors duration-200">
+                  <svg class="h-10 w-10" data-name="Layer 1" height="32" id="Layer_1" viewBox="0 0 32 32" width="32" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <style>
+                        .cls-1 {
+                          fill: none;
+                        }
+                      </style>
+                    </defs>
+                    <path d="M29.8945,23.542l-1.7238-3.4473a1.9994,1.9994,0,0,0-1.7886-1.1054h-.4683a14.887,14.887,0,0,0-1.8193-4.5977C23.0647,12.4429,22,10.4277,22,8A6,6,0,0,0,10,8a13.0041,13.0041,0,0,1-2.0486,6.2153,14.7022,14.7022,0,0,0-1.8708,4.7759H5.6184a2.0007,2.0007,0,0,0-1.7893,1.106L2.1055,23.5439a1,1,0,0,0,.0971,1.0508L6.2319,29.92a2.9995,2.9995,0,0,0,3.8482.6519l1.8735-1.1241A13.8223,13.8223,0,0,0,16,30a13.8034,13.8034,0,0,0,4.0488-.5527L21.92,30.57a2.9819,2.9819,0,0,0,1.5385.43,3.0385,3.0385,0,0,0,2.3389-1.1187l4-5.2885A1.001,1.001,0,0,0,29.8945,23.542Zm-7.5683-8.2158a14.8311,14.8311,0,0,1,1.5591,3.6631H21.738a16.6591,16.6591,0,0,0-.98-2.6455,12.7083,12.7083,0,0,1-.8789-2.4454,8.8046,8.8046,0,0,0,1.0034-1.4277l.0384-.0718A30.746,30.746,0,0,0,22.3262,15.3262ZM12,21a9.3959,9.3959,0,0,1,1.0728-3.8516c.2563-.5825.5158-1.1757.726-1.7993a4.0474,4.0474,0,0,0,4.4024,0c.21.6236.47,1.2168.726,1.7993A9.3959,9.3959,0,0,1,20,21c0,1.2881-.4146,3-4,3S12,22.2881,12,21Zm6.5105-8.5752A3.6265,3.6265,0,0,1,16,14a3.6273,3.6273,0,0,1-2.5107-1.5757,7.6356,7.6356,0,0,1,5.0212,0ZM12,8a4,4,0,0,1,8,0,10.9164,10.9164,0,0,0,.4673,3.1152A7.9811,7.9811,0,0,0,19,10.4849V8H17v2.0542a9.2522,9.2522,0,0,0-2,0V8H13v2.4849a7.9019,7.9019,0,0,0-1.4785.6372A10.7093,10.7093,0,0,0,12,8ZM9.7146,15.1592A29.8007,29.8007,0,0,0,11.0693,12.38l.0484.09a8.8046,8.8046,0,0,0,1.0034,1.4277,12.7083,12.7083,0,0,1-.8789,2.4454,16.6574,16.6574,0,0,0-.981,2.6474H8.1047A14.0567,14.0567,0,0,1,9.7146,15.1592Zm1.3708,12.4775L9.0508,28.8574a.9866.9866,0,0,1-1.2529-.1806L4.1724,23.8833l1.4458-2.8921h3.706L11.49,26.3853A1.0036,1.0036,0,0,1,11.0854,27.6367Zm2.316.1177a2.9571,2.9571,0,0,0-.0562-2.11A9.03,9.03,0,0,0,16,26a9.0237,9.0237,0,0,0,2.6562-.3564,2.9889,2.9889,0,0,0-.0546,2.11,13.8722,13.8722,0,0,1-5.2,0Zm10.83.8833a.996.996,0,0,1-1.2827.2178l-2.0342-1.2207h0a1.01,1.01,0,0,1-.396-1.273l2.157-5.3725h3.7058l1.4461,2.892Z" transform="translate(0 0)"/>
+                    <rect class="cls-1" data-name="&lt;Transparent Rectangle&gt;" height="32" id="_Transparent_Rectangle_" width="32"/>
+                  </svg>
+                  <div>
+                    <div class="font-semibold text-amber-500">Direct Download</div>
+                    <div class="text-sm text-gray-400">For Linux & Mac (coming soon)</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>  
+<!-- Top Players Preview -->
+        <div class="mt-52">
+          <div class="flex justify-center mb-4">
+            <a
+              href="https://discord.gg/3vsPM6qvt3"
+              target="_blank"
+              class="group relative inline-flex items-center gap-x-2 rounded-xl bg-[#5865F2] px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-[#4752C4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5865F2] transition-all duration-200 hover:scale-105"
+            >
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z" />
+              </svg>
+              Join our discord
+              <div class="absolute -inset-1 rounded-xl bg-gradient-to-r from-[#5865F2] to-[#4752C4] opacity-30 blur transition duration-200 group-hover:opacity-50">
+              </div>
+            </a>
+          </div>
+          
+          <.link navigate={~p"/highscores"} class="group">
+            <div class="p-6 bg-gray-800/50 rounded-xl border border-gray-700/50 hover:bg-purple-900/20 transition-colors duration-200">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-2xl font-martel font-bold text-amber-500">Top Players</h3>
+                
+                <div class="text-purple-400 group-hover:text-purple-300 transition-colors duration-200">
+                  <.icon name="hero-arrow-right-solid" class="h-6 w-6" />
+                </div>
+              </div>
+              
+              <div class="overflow-x-auto">
+                <table class="min-w-full">
+                  <thead>
+                    <tr>
+                      <th class="text-left text-sm font-semibold text-white py-2">Character</th>
+                      
+                      <th class="text-left text-sm font-semibold text-white py-2">Vocation</th>
+                      
+                      <th class="text-left text-sm font-semibold text-white py-2">Max level</th>
+                      
+                      <th class="text-left text-sm font-semibold text-white py-2">
+                        Single game kills
+                      </th>
+                    </tr>
+                  </thead>
+                  
+                  <tbody class="divide-y divide-gray-700/50">
+                    <%= for highscore <- @top_highscores do %>
+                      <tr>
+                        <td class="py-2 text-sm font-medium text-amber-500">
+                          {highscore.character.name}
+                        </td>
+                        
+                        <td class="py-2 text-sm text-gray-200">
+                          {highscore.character.vocation}
+                        </td>
+                        
+                        <td class="py-2 text-sm text-gray-200">
+                          {highscore.max_level_per_game}
+                        </td>
+                        
+                        <td class="py-2 text-sm text-gray-200">
+                          {highscore.max_kills_per_game}
+                        </td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </.link>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
