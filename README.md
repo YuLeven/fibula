@@ -48,7 +48,8 @@ If you need to run a manual build with Unreal tools, make sure to use a server t
 Adjust the exact command to match your platform and the engine layout created when you built UE from source.
 
 **Site / Web Deployment**
-- The repository contains a small site component. Use the `deploy_site.sh` script to deploy or start the site services from this repo root.
+- The repository contains a small site component. Use the `deploy_site.sh` script to deploy or start the site services from this repo root. The site is also the login server for the game and must be running for players to be able to join.
+Please refer to [this tutorial](https://hexdocs.pm/phoenix/up_and_running.html) for more details on running Phoenix apps.
 
 ```bash
 ./deploy_site.sh
@@ -68,6 +69,7 @@ The script will handle building and deploying the site (see the script itself fo
 **Contributing & Contact**
 - If you want to contribute, open issues or pull requests against this repository.
 - For questions about building or deployment, include OS, Unreal Engine commit/branch, and any relevant log excerpts when you open an issue.
+
 
 
 
