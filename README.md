@@ -1,6 +1,14 @@
 # Fibula
 ![Project banner](https://github.com/YuLeven/fibula/blob/main/game-screenshot-cropped-16-9-min.png)
-Gameplay footage:
+
+<a href="https://discord.com/invite/3vsPM6qvt3" target="_blank">
+ <img src="https://cdn.prod.website-files.com/6257adef93867e50d84d30e2/67d00cf7266d2c75571aebde_Example.svg" alt="Join our discord" />
+</a>
+
+Join our discord
+
+
+### Gameplay footage:
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=GKCt1Wqv20k" target="_blank">
  <img src="http://img.youtube.com/vi/GKCt1Wqv20k/mqdefault.jpg" alt="Watch the video" width="240" height="180" border="10" />
@@ -69,6 +77,7 @@ The script will handle building and deploying the site (see the script itself fo
 **Contributing & Contact**
 - If you want to contribute, open issues or pull requests against this repository.
 - For questions about building or deployment, include OS, Unreal Engine commit/branch, and any relevant log excerpts when you open an issue.
+
 
 
 
