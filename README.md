@@ -56,18 +56,13 @@ If you need to run a manual build with Unreal tools, make sure to use a server t
 Adjust the exact command to match your platform and the engine layout created when you built UE from source.
 
 **Site / Web Deployment**
-- The repository contains a small site component. Use the `deploy_site.sh` script to deploy or start the site services from this repo root. The site is also the login server for the game and must be running for players to be able to join.
-Please refer to [this tutorial](https://hexdocs.pm/phoenix/up_and_running.html) for more details on running Phoenix apps.
 
-```bash
-./deploy_site.sh
-```
-
-The script will handle building and deploying the site (see the script itself for environment and dependency details). If the script requires environment variables (for example keys, database URLS, or host settings) set them in your shell or via an `.env` file as documented inside `deploy_site.sh`.
+The site is used as a login server, and needs to be running for players to be able to join the game.
 
 **Useful Scripts**
 - `build_server.sh` — helper wrapper to build the server as a headless server build.
 - `deploy_site.sh` — deploy or start the site component for this project.
+- `docker-compose up` — runs a development version of the site on docker for ease of run
 
 **Troubleshooting & Notes**
 - Building Unreal Engine from source can take significant disk space and time. Follow Epic's docs closely for prerequisites (Visual Studio, SDKs, etc.).
