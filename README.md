@@ -1,4 +1,18 @@
 # Fibula
+![Project banner](https://github.com/YuLeven/fibula/blob/main/game-screenshot-cropped-16-9-min.png)
+
+<a href="https://discord.com/invite/3vsPM6qvt3" target="_blank">
+ <img src="https://cdn.prod.website-files.com/6257adef93867e50d84d30e2/67d00cf7266d2c75571aebde_Example.svg" alt="Join our discord" />
+</a>
+
+Join our discord
+
+
+### Gameplay footage:
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=GKCt1Wqv20k" target="_blank">
+ <img src="http://img.youtube.com/vi/GKCt1Wqv20k/mqdefault.jpg" alt="Watch the video" width="240" height="180" border="10" />
+</a>
 
 **Disclaimer:** Fibula is a Tibia-inspired 3D arena PvP game. It is an independent project and not affiliated with or endorsed by the original Tibia creators or publishers. Any resemblance to Tibia is intentional as inspiration only — Fibula is its own game with distinct mechanics, assets, and network code.
 
@@ -42,6 +56,7 @@ If you need to run a manual build with Unreal tools, make sure to use a server t
 Adjust the exact command to match your platform and the engine layout created when you built UE from source.
 
 **Site / Web Deployment**
+
 The site is used as a login server, and needs to be running for players to be able to join the game.
 
 **Useful Scripts**
@@ -57,4 +72,8 @@ The site is used as a login server, and needs to be running for players to be ab
 **Contributing & Contact**
 - If you want to contribute, open issues or pull requests against this repository.
 - For questions about building or deployment, include OS, Unreal Engine commit/branch, and any relevant log excerpts when you open an issue.
+
+
+
+
 

@@ -6,7 +6,7 @@ namespace ServerConfig
 {
     static FString GetGameServerAddress()
     {
-        FString ServerAddress = FPlatformMisc::GetEnvironmentVariable(TEXT("GAME_SERVER_ADDRESS"));
+        FString ServerAddress = FPlatformMisc::GetEnvironmentVariable(TEXT("FIBULA_GAME_SERVER_ADDRESS"));
         if (ServerAddress.IsEmpty())
         {
             return TEXT("127.0.0.1");
@@ -16,7 +16,7 @@ namespace ServerConfig
 
     static FString GetServerUsername()
     {
-        FString BackendUsername = FPlatformMisc::GetEnvironmentVariable(TEXT("BACKEND_USERNAME"));
+        FString BackendUsername = FPlatformMisc::GetEnvironmentVariable(TEXT("FIBULA_BACKEND_USERNAME"));
         if (BackendUsername.IsEmpty())
         {
             return TEXT("server");
@@ -26,7 +26,7 @@ namespace ServerConfig
 
     static FString GetBackendServer()
     {
-        FString BackendServer = FPlatformMisc::GetEnvironmentVariable(TEXT("BACKEND_SERVER"));
+        FString BackendServer = FPlatformMisc::GetEnvironmentVariable(TEXT("FIBULA_BACKEND_SERVER"));
         if (BackendServer.IsEmpty())
         {
             return TEXT("127.0.0.1:4001");
@@ -36,7 +36,7 @@ namespace ServerConfig
 
     static FString GetServerPassword()
     {
-        FString BackendPassword = FPlatformMisc::GetEnvironmentVariable(TEXT("BACKEND_PASSWORD"));
+        FString BackendPassword = FPlatformMisc::GetEnvironmentVariable(TEXT("FIBULA_BACKEND_PASSWORD"));
         if (BackendPassword.IsEmpty())
         {
             return TEXT("secret");
@@ -46,7 +46,7 @@ namespace ServerConfig
 
     static FString GetLoginServer()
     {
-        FString LoginServer = FPlatformMisc::GetEnvironmentVariable(TEXT("LOGIN_SERVER"));
+        FString LoginServer = FPlatformMisc::GetEnvironmentVariable(TEXT("FIBULA_LOGIN_SERVER"));
         if (LoginServer.IsEmpty())
         {
 #if UE_BUILD_SHIPPING
