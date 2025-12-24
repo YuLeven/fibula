@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: fibula-psql
+    environment:
+      POSTGRES_USER: fibula_site
+      POSTGRES_PASSWORD: fibula_site
+      POSTGRES_DB: fibula_site_dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fibula_site"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  fibula_site:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: fibula-site
+    environment:
+      DB_HOST: fibula-psql
+      MIX_ENV: dev
+    ports:
+      - "4000:4000"
+      - "4001:4001"
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: /app/entrypoint.sh
+
+volumes:
+  postgres_data:

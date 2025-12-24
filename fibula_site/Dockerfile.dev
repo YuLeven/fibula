@@ -1,0 +1,28 @@
+FROM elixir:1.18-alpine
+
+RUN apk add --no-cache \
+    build-base \
+    postgresql-client \
+    git
+
+WORKDIR /app
+
+# Install Hex and Rebar
+RUN mix local.hex --force && \
+    mix local.rebar --force
+
+# Copy mix files
+COPY mix.exs mix.lock ./
+
+# Install dependencies
+RUN mix deps.get
+
+# Copy the rest of the application
+COPY . .
+
+EXPOSE 4000 4001
+
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+ENTRYPOINT ["/app/entrypoint.sh"]
