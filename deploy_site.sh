@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Configuration variables
-PROJECT_PATH="/home/ian/fibula/fibula_site"
-OUTPUT_DIR="/home/ian/release"
+REMOTE_USER="fibula"
+PROJECT_PATH="/home/${REMOTE_USER}/fibula/fibula_site"
+OUTPUT_DIR="/home/${REMOTE_USER}/release"
 REMOTE_HOST="fibulapvp.com"
-REMOTE_USER="ian"
 REMOTE_PORT="13000"
-REMOTE_DEPLOY_PATH="/home/ian/fibula_site"
+REMOTE_DEPLOY_PATH="/home/${REMOTE_USER}/fibula_site"
 
 # Colors for output
 RED='\033[0;31m'
@@ -78,7 +78,7 @@ EOF
             rm -rf ${REMOTE_DEPLOY_PATH}/*
             
             # Unpack new release
-            tar -xzf /home/ian/$FINAL_RELEASE_NAME
+            tar -xzf /home/${REMOTE_USER}/$FINAL_RELEASE_NAME
             
             # Clean up tarball
             rm $FINAL_RELEASE_NAME

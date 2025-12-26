@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # Configuration variables
-PROJECT_PATH="/home/ian/fibula/Fibula.uproject"
-OUTPUT_DIR="/home/ian/release"
-STAGING_DIR="/home/ian/release"
+REMOTE_USER="fibula"
+PROJECT_PATH="/home/${REMOTE_USER}/fibula/Fibula.uproject"
+OUTPUT_DIR="/home/${REMOTE_USER}/release"
+STAGING_DIR="/home/${REMOTE_USER}/release"
 UE_PATH="../UnrealEngine-5.5.0-release"
 BUILD_CONFIG="${BUILD_CONFIG:-Development}"
 
