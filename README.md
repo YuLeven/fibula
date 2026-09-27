@@ -19,6 +19,11 @@ Join our discord
 **Overview**
 - Fibula is a 3D arena-style PvP game inspired by Tibia. The project contains a server (headless) and a client (regular game client), plus a small site for community/management purposes.
 
+**Agent Development Guidance**
+- Start with [AGENTS.md](AGENTS.md) for project goals and working conventions.
+- Use the [feature guide index](docs/agents/README.md) for game modes, combat and balance, inventory/progression, backend contracts, UI/content, testing, and the roughly 40-player server target.
+- The guides distinguish current behavior from [known gaps](docs/agents/known-gaps.md) and the [planned CI coverage](docs/agents/testing-and-ci.md).
+
 **Prerequisites**
 - A supported platform for building Unreal Engine from source.
 - Git LFS (if needed for large assets).
