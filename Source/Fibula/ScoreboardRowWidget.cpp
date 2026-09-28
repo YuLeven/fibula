@@ -1,13 +1,8 @@
 #include "ScoreboardRowWidget.h"
-#include "FibulaPlayerState.h"
 
 void UScoreboardRowWidget::SetupRow(AFibulaCharacter *Player)
 {
     if (!Player)
-        return;
-
-    AFibulaPlayerState *PlayerState = Cast<AFibulaPlayerState>(Player->GetPlayerState());
-    if (!PlayerState)
         return;
 
     if (Background)

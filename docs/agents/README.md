@@ -10,6 +10,7 @@ they do not rely on automatic discovery outside their directories.
 | --- | --- |
 | Understand startup and ownership | [Architecture](architecture.md) |
 | Change team assignment, score, spawns, match lifecycle, or add a mode | [Game modes](game-modes.md) |
+| Implement or tune server bots | [Game modes](game-modes.md), [combat](combat-and-balance.md), [testing](testing-and-ci.md), [scalability](scalability.md) |
 | Add/tune spells, damage, healing, targeting, or control | [Combat and balance](combat-and-balance.md) |
 | Change equipment, loot, rewards, death, or progression | [Inventory and progression](inventory-and-progression.md) |
 | Change login, characters, server discovery, or persistence | [Backend contracts](backend-contracts.md) |

@@ -8,7 +8,7 @@ public class Fibula : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG", "SlateCore", "Niagara", "Json", "JsonUtilities", "HTTP", "RHI", "Slate" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG", "SlateCore", "Niagara", "Json", "JsonUtilities", "HTTP", "RHI", "Slate", "AIModule", "NavigationSystem" });
 		SetupIrisSupport(Target);
 	}
 }

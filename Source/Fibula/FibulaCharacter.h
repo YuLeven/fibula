@@ -185,6 +185,10 @@ public:
 	int32 GetItemCount(const FString &ItemName) const;
 
 	FString GetCharacterName() const { return CharacterName; }
+	void SetIsBot(bool bNewIsBot);
+	bool IsBot() const { return bIsBot; }
+	void SetPersistenceSuppressed(bool bSuppress) { bSuppressPersistence = bSuppress; }
+	bool IsPersistenceSuppressed() const { return bSuppressPersistence; }
 
 	void SetCharacterName(const FString &Name) { CharacterName = Name; }
 	void SetVocation(EVocation SelectedVocation);
@@ -207,6 +211,10 @@ public:
 	virtual void PossessedBy(AController *NewController) override;
 
 private:
+	UPROPERTY(Replicated)
+	bool bIsBot = false;
+	bool bSuppressPersistence = false;
+
 	struct FDamageDealer
 	{
 		float Timestamp;
@@ -320,6 +328,9 @@ public:
 
 	UFUNCTION(Server, Reliable)
 	void ServerSetTarget(AFibulaCharacter *NewTarget);
+
+	UFUNCTION(Server, Unreliable)
+	void ServerAutomationBotTestMove(FVector Direction);
 
 	UFUNCTION(Server, Reliable)
 	void ServerSetHealingTarget(AFibulaCharacter *NewTarget);

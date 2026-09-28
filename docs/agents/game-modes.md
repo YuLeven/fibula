@@ -51,6 +51,33 @@ base class. Do not treat it as equivalent to all FFA subclass policies.
 Death handling and respawn live in `AFibulaCharacter`, not in the mode subclasses.
 See [inventory and progression](inventory-and-progression.md) for those shared rules.
 
+## Server bots
+
+AFibulaGameMode reconciles bot population every few seconds. BotTargetPopulation is
+the desired total active population, MaximumBotCount caps the AI population, and
+BotMinimumHumanPlayers avoids running a bot-only match. Defaults are eight total
+participants, twelve maximum bots, and one required human. Once the minimum loaded-human threshold is met,
+the desired bot count is:
+
+    min(MaximumBotCount, max(0, BotTargetPopulation - loaded humans), open mode slots)
+
+With defaults, zero loaded humans creates no bots, one human gets seven, two get
+six, and eight get none. Bots use AFibulaBotController, standard character stats
+and starting equipment, and the mode's existing team, damage, healing, and spawn rules.
+
+Bots are AAIController-possessed characters. They prefer nearby human opponents,
+use vocation-specific attacks and available healing, patrol when no enemy is
+available, and switch targets and choose a new route after a movement stall.
+Navigation uses the map's NavMesh when available and direct movement as a fallback.
+Bot inventory is transient and suppressed from Phoenix persistence. Bots can affect
+Team Battle score through normal character deaths but do not receive player-controller
+rewards. When population shrinks, removal favors the larger team; human teams remain
+unchanged.
+
+Set BotRandomSeed in game config or pass -FibulaBotSeed=<integer> for repeatable
+vocation and decision selection. Keep bot population and mode capacity together:
+FFA currently admits 44 players and Team Battle 24.
+
 ## Competitive balance requirements
 
 Equalize opportunity across both teams: joining/leaving, spawn safety, routes to
@@ -82,5 +109,4 @@ Measure results for both teams and all vocations, not just aggregate win rate.
 
 Planned tests: assignment invariants, policy matrix, spawn ownership, scoring exactly
 once, time/score endings, draws, reward eligibility, late joins, and repeated rounds.
-No Unreal mode automation is checked in yet. The FFA header's self-healing-only
-comment contradicts its permissive implementation; see [known gaps](known-gaps.md).
+The local bot multiplayer smoke test is documented in [testing and CI](testing-and-ci.md). General Unreal mode automation is still not implemented. The FFA header's self-healing-only comment contradicts its permissive implementation; see [known gaps](known-gaps.md).
