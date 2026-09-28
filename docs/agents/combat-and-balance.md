@@ -122,8 +122,13 @@ login choices, spell eligibility, saved layouts, and any Blueprint/mesh assumpti
 Unknown vocation strings currently fall back to Sorcerer in the game mode; that is
 not a complete compatibility strategy for an added vocation.
 
-Planned regression coverage: legal/illegal casts, no-cost failures, exactly-once
-costs/effects, cooldown boundaries, friendly fire/healing by mode, grid/LOS boundaries,
-effect refresh and expiry, shield overflow, death attribution, and replicated observer
-results. See [testing](testing-and-ci.md) and [known gaps](known-gaps.md) before claiming
-these invariants are already guaranteed.
+The native suite now drives an opponent target through Knight melee attacks, confirms
+the target loses health while a same-team target does not, casts a targeted rune via
+the character item-use route, and casts Heal Friend through the character spell route
+after selecting a teammate. It also covers health/mana costs, no-target failures,
+exhaustion, self-healing, protection zones, and match death/respawn. These are
+single-process authority-world mechanics tests. Cooldown timing, real mouse targeting,
+line-of-sight and area-grid edges, projectile travel/hits, effect expiry/refresh,
+death attribution and observer replication still need dedicated scenarios. See
+[testing](testing-and-ci.md) and [known gaps](known-gaps.md) before claiming these
+invariants are already guaranteed.

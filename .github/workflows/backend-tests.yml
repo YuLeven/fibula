@@ -1,0 +1,51 @@
+name: Backend tests
+
+on:
+  pull_request:
+    paths:
+      - 'fibula_site/**'
+      - '.github/workflows/backend-tests.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'fibula_site/**'
+      - '.github/workflows/backend-tests.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: fibula_site
+          POSTGRES_PASSWORD: fibula_site
+          POSTGRES_DB: fibula_site_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U fibula_site -d fibula_site_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      MIX_ENV: test
+      MIX_TEST_PARTITION: ''
+    steps:
+      - uses: actions/checkout@v4
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: '27'
+          elixir-version: '1.18'
+      - name: Install dependencies
+        working-directory: fibula_site
+        run: mix deps.get --check-locked
+      - name: Compile
+        working-directory: fibula_site
+        run: mix compile
+      - name: Run tests and database migrations
+        working-directory: fibula_site
+        run: mix test --seed 0
