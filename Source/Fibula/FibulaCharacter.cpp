@@ -7,6 +7,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Controller.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
@@ -579,6 +581,7 @@ void AFibulaCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &Out
 	DOREPLIFETIME(AFibulaCharacter, Experience);
 	DOREPLIFETIME(AFibulaCharacter, CharacterLevel);
 	DOREPLIFETIME(AFibulaCharacter, CurrentHealth);
+	DOREPLIFETIME(AFibulaCharacter, bIsBot);
 	DOREPLIFETIME(AFibulaCharacter, MaxHealth);
 	DOREPLIFETIME(AFibulaCharacter, CurrentMana);
 	DOREPLIFETIME(AFibulaCharacter, MaxMana);
@@ -869,6 +872,16 @@ void AFibulaCharacter::ServerModifyHealth_Implementation(int32 Amount, AFibulaCh
 	}
 
 	
+#if !UE_BUILD_SHIPPING
+	if (DamageAmount > 0 && DamageDealer && DamageDealer->IsBot() && !IsBot())
+	{
+		if (AFibulaGameMode *GameMode = Cast<AFibulaGameMode>(GetWorld()->GetAuthGameMode()))
+		{
+			GameMode->RecordAutomationBotDamage(DamageAmount);
+		}
+	}
+#endif
+
 	int32 NewHealth = FMath::Clamp(CurrentHealth - DamageAmount, 0, MaxHealth);
 
 	
@@ -984,6 +997,24 @@ void AFibulaCharacter::ServerSetTarget_Implementation(AFibulaCharacter *NewTarge
 			}
 		}
 	}
+}
+
+void AFibulaCharacter::ServerAutomationBotTestMove_Implementation(FVector Direction)
+{
+#if !UE_BUILD_SHIPPING
+	if (!HasAuthority() || !FParse::Param(FCommandLine::Get(), TEXT("FibulaBotTest")) ||
+		!GetCharacterMovement() || Direction.ContainsNaN())
+	{
+		return;
+	}
+
+	Direction.Z = 0.0f;
+	Direction = Direction.GetClampedToMaxSize(1.0f);
+	if (!Direction.IsNearlyZero())
+	{
+		AddMovementInput(Direction, 1.0f, true);
+	}
+#endif
 }
 
 void AFibulaCharacter::ServerSetHealingTarget_Implementation(AFibulaCharacter *NewTarget)
@@ -2977,7 +3008,7 @@ FString AFibulaCharacter::GetVocationAsString() const
 
 void AFibulaCharacter::Destroyed()
 {
-	if (HasAuthority())
+	if (HasAuthority() && !bSuppressPersistence)
 	{
 		
 		if (AFibulaGameMode *GameMode = Cast<AFibulaGameMode>(GetWorld()->GetAuthGameMode()))
@@ -3161,6 +3192,19 @@ void AFibulaCharacter::OnRightMousePressed()
 void AFibulaCharacter::OnRightMouseReleased()
 {
 	bRightMousePressed = false;
+}
+
+void AFibulaCharacter::SetIsBot(bool bNewIsBot)
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+	bIsBot = bNewIsBot;
+	if (bIsBot)
+	{
+		bSuppressPersistence = true;
+	}
 }
 
 void AFibulaCharacter::SetVocation(EVocation InVocation)

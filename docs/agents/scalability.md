@@ -12,6 +12,15 @@ Do not raise a cap to declare scalability complete. Coordinate mode admission,
 directory headroom, stale reports, map/spawn capacity, team balance, client rendering,
 replication, and backend load. Capacity races also need correctness tests.
 
+## Bot workload
+
+Each active bot performs a bounded target scan on a staggered 0.65–0.95 second
+decision interval. Initial complexity is approximately O(B × P), where B is active
+bots and P is character actors. The default desired population is eight total
+participants with at most twelve bots, so profile at the configured maximum and
+alongside crowded human matches before raising these settings. Measure server frame
+time, navigation/path-follow requests, actor scans, and replicated character state;
+do not treat the bot cap as a measured capacity claim.
 ## Source-backed measurement targets
 
 | Path | Current cost pattern | What to inspect when changing it |

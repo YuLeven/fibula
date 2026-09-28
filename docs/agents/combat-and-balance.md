@@ -22,6 +22,11 @@ Equipment and temporary effects modify effective values. Auto-attacks use a
 two-second timer; current target distance checks run every 0.5 seconds with a
 10,000-unit maximum. A range constant for mages does not enable mage auto-attacks.
 
+Arena bots reuse these character and spell rules. Knights and Paladins use their
+existing auto-attacks and eligible vocation spells; Sorcerers and Druids cast
+available vocation spells, and Druids also heal injured Team Battle allies. Bot
+spell selection does not change human input or spell validation.
+
 Input reaches `ServerCastSpell`, `ServerUseItem`, or chat-spell handling on the
 character, then `ASpellSystem::ServerTryExecuteSpell`. The server looks up the
 definition, checks vocation, mana, exhaustion, target requirements, and protection

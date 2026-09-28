@@ -18,7 +18,7 @@ regression tests; this documentation does not change gameplay or infrastructure.
 | Team lifecycle | Assignment counts character actors, tie-breaks to team 1, and spawn grouping depends on discovered actor order. Battle start time is set before the two-second wait ends. | Test retained logout pawns, joins/leaves, stable team spawns, countdown versus end timer, and repeated matches. |
 | Discovery/admission | Mode caps are 44/24, recommendation requires four free slots, reports are periodic, and final admission occurs after async loading. There is no slot reservation. | Distinguish capacity targets from current behavior; test boundary and simultaneous joins, stale status, and mode-specific capacity. |
 | Status acknowledgement | `BackendServerController.update` returns success regardless of `ServerTracker.update_server_status` result. | Test invalid status and propagate failure meaningfully before clients rely on acknowledgements. |
-| Validation coverage | Backend tests exist; tracked CI workflows, Unreal gameplay automation, cross-service smoke, and load harnesses were not found. | Implement the staged [CI roadmap](testing-and-ci.md); do not describe documentation or a compile as executed gameplay tests. |
+| Validation coverage | A local bot multiplayer smoke runner exists, but it has not yet been run on this checkout; tracked CI workflows, general Unreal gameplay automation, cross-service smoke, and load harnesses remain absent. | Run scripts/test_bots.ps1 with the UE 5.5 source engine, then continue the staged [CI roadmap](testing-and-ci.md). Do not describe unrun checks as passing. |
 
 Source navigation: [character](../../Source/Fibula/FibulaCharacter.cpp),
 [game mode](../../Source/Fibula/FibulaGameMode.cpp),

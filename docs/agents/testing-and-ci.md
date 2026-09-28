@@ -16,16 +16,39 @@ a coverage percentage. The review did not execute the suite.
 | Browser auth/session/account LiveViews | `fibula_site_web/user_auth_test.exs`, user session/controller and `live/user_*` tests |
 | Character page and basic HTML/JSON | `live/character_details_live_test.exs` under `fibula_site_web/`, plus controller tests |
 
-The repository now has a Phoenix test workflow at
+The repository has a Phoenix test workflow at
 `.github/workflows/backend-tests.yml` and native Unreal Automation tests under
 `Source/Fibula/Tests/`. The 25 native cases include a real mode-initialized encounter:
 three players join, the Knight targets and swings at an opponent, repeat melee damage
 is applied, and the mode rejects an attack against an ally. Other interaction tests
 route rune use and ally healing through character server actions and verify resulting
 health, mana, inventory, death, score, and respawn state. These run in a local authority
-world; no dedicated networked multiplayer smoke, replication, Blueprint health,
-end-to-end persistence, or 40-player load harness exists yet.
+world. A dedicated server bot smoke runner at `scripts/test_bots.ps1` exercises both
+supported modes through two real Unreal network clients and verifies bot movement,
+targeting, combat, and replicated damage. These checks do not cover Phoenix login or
+character persistence, full match lifecycle, or 40-player capacity. Existing backend
+tests alone do not demonstrate Unreal replication or Blueprint health.
+### Local bot multiplayer smoke
 
+With a UE 5.5 source engine available, run from the repository root:
+
+    $env:FIBULA_UE_ROOT = 'D:\Path\To\UnrealEngine'
+    .\scripts\test_bots.ps1
+    .\scripts\test_bots.ps1 -Mode FFA
+
+The script builds FibulaEditor, FibulaClient, and FibulaServer, starts the
+Ankrahmun dedicated server, then joins two test clients. Both clients send movement
+and targeting input toward opposing bots. The server reports PASS only after bots
+acquire targets, issue movement and combat actions, make measured progress, and deal
+bot-attributed health damage after staging. Both clients must report their inputs, and
+at least one must observe replicated incoming damage. Logs are retained under the
+local temporary directory and included on failure.
+
+`-FibulaBotTest` is development-only. It creates disposable test characters, skips
+the server status HTTP reporter, and suppresses item persistence; Shipping builds
+do not include this test login path. The script uses no Phoenix account or production
+credentials. Use -TimeoutSeconds to allow slower editor startup. This is a focused
+bot smoke test, not a general match lifecycle, cross-service, or load test.
 ## Commands available now
 
 From `fibula_site/`, with dependencies and test PostgreSQL configured:
@@ -60,9 +83,9 @@ The runner builds `FibulaEditor`, runs every `Fibula.*` automation test headless
 and fails if the engine exits unsuccessfully or reports failed/not-run tests. Reports
 and logs are written under ignored `Saved/Tests/`. For shared runtime changes, also
 build affected Client/Server targets using [Source/AGENTS.md](../../Source/AGENTS.md).
-The Unreal runner requires a provisioned UE 5.5 engine and project assets; the hosted
-backend workflow cannot substitute for it.
-
+The Unreal runners require a provisioned UE 5.5 engine and project assets; the hosted
+backend workflow cannot substitute for them. The bot smoke runner above must be run
+before claiming its dedicated-session behavior checks pass.
 ## Required test design for changes
 
 - Add regression tests for gameplay, protocol, persistence, and rule changes. A bug

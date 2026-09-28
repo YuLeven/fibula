@@ -1,6 +1,5 @@
 #include "ScoreboardWidget.h"
 #include "FibulaGameMode.h"
-#include "FibulaPlayerState.h"
 #include "FibulaGameState.h"
 #include "FibulaCharacter.h"
 #include "Components/TextBlock.h"
@@ -95,7 +94,7 @@ void UScoreboardWidget::UpdateScoreboard()
     for (TActorIterator<AFibulaCharacter> It(GetWorld()); It; ++It)
     {
         AFibulaCharacter *Character = *It;
-        if (!Character || !Character->GetPlayerState())
+        if (!Character)
             continue;
 
         Players.Add(Character);

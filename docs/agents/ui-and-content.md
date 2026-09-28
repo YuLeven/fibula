@@ -22,8 +22,10 @@ content by name, so renamed spells/items require compatibility handling. Auth to
 use the separate `AuthData` slot; neither file is the backend character save system.
 
 [ScoreboardWidget](../../Source/Fibula/ScoreboardWidget.cpp) scans character actors,
-sorts by kills, and reconstructs rows every five seconds. Match outcome UI is driven
-by Team Battle state. Test the underlying counts, not just whether the widget renders.
+sorts by kills, and reconstructs rows every five seconds. Rows read name, level, team,
+kills, and deaths from the character, so AI-controlled characters without a PlayerState
+remain visible. Match outcome UI is driven by Team Battle state. Test the underlying
+counts, not just whether the widget renders.
 
 Chat messages and incantations involve character server handling and the replicated
 `AChatSystem`. New UI actions must request validated server operations, not mutate

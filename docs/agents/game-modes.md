@@ -51,6 +51,33 @@ base class. Do not treat it as equivalent to all FFA subclass policies.
 Death handling and respawn live in `AFibulaCharacter`, not in the mode subclasses.
 See [inventory and progression](inventory-and-progression.md) for those shared rules.
 
+## Server bots
+
+AFibulaGameMode reconciles bot population every few seconds. BotTargetPopulation is
+the desired total active population, MaximumBotCount caps the AI population, and
+BotMinimumHumanPlayers avoids running a bot-only match. Defaults are eight total
+participants, twelve maximum bots, and one required human. Once the minimum loaded-human threshold is met,
+the desired bot count is:
+
+    min(MaximumBotCount, max(0, BotTargetPopulation - loaded humans), open mode slots)
+
+With defaults, zero loaded humans creates no bots, one human gets seven, two get
+six, and eight get none. Bots use AFibulaBotController, standard character stats
+and starting equipment, and the mode's existing team, damage, healing, and spawn rules.
+
+Bots are AAIController-possessed characters. They prefer nearby human opponents,
+use vocation-specific attacks and available healing, patrol when no enemy is
+available, and switch targets and choose a new route after a movement stall.
+Navigation uses the map's NavMesh when available and direct movement as a fallback.
+Bot inventory is transient and suppressed from Phoenix persistence. Bots can affect
+Team Battle score through normal character deaths but do not receive player-controller
+rewards. When population shrinks, removal favors the larger team; human teams remain
+unchanged.
+
+Set BotRandomSeed in game config or pass -FibulaBotSeed=<integer> for repeatable
+vocation and decision selection. Keep bot population and mode capacity together:
+FFA currently admits 44 players and Team Battle 24.
+
 ## Competitive balance requirements
 
 Equalize opportunity across both teams: joining/leaving, spawn safety, routes to
@@ -84,6 +111,8 @@ Native mode/mechanics coverage now includes balanced assignment through actual p
 initialization, an opponent melee encounter, friendly-fire rejection, death scoring,
 respawn protection, active-match score gating, and countdown boundaries. Remaining
 gaps include map-backed spawn ownership, actual replicated clients, draw and reward
-eligibility, match cleanup, reconnects, and repeated rounds. Forty-actor assignment
-is not a 40-connection capacity test. The FFA header's self-healing-only comment
-contradicts its permissive implementation; see [known gaps](known-gaps.md).
+eligibility, match cleanup, reconnects, and repeated rounds. The bot multiplayer
+smoke in [testing and CI](testing-and-ci.md) additionally exercises both modes with
+real clients. Forty-actor assignment is not a 40-connection capacity test. The FFA
+header's self-healing-only comment contradicts its permissive implementation; see
+[known gaps](known-gaps.md).

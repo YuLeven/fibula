@@ -24,6 +24,11 @@ systems on authority. Clients start battle music. `AFibulaPlayerState` holds pla
 vocation information; the character carries most replicated gameplay state. Team
 Battle adds replicated team scores and start time through its game-state subclass.
 
+Arena bots are server-owned AIController pawns created by the active game mode. They
+use the normal replicated character and combat rules, but do not authenticate with
+Phoenix or persist inventory. The local bot smoke test uses disposable loopback
+players in Development builds only.
+
 ## Player lifecycle
 
 1. Register/log in through Phoenix; the client stores a Base64 session token in the
