@@ -38,6 +38,48 @@ bool FFibulaCombatPolicies::RunTest(const FString&)
     return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFibulaPvPEncounter, "Fibula.Interactions.TeamBattle.MeleeKillAndFriendlyFire",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FFibulaPvPEncounter::RunTest(const FString&)
+{
+    FibulaTests::FTestWorld F(AFibulaTeamBattleGameMode::StaticClass());
+    auto* State = F.World->GetGameState<AFibulaTeamBattleGameState>();
+    if (!TestNotNull(TEXT("Team Battle state exists"), State)) return false;
+
+    F.Spawn<APlayerStart>(FVector(0, 0, 100));
+    F.Spawn<APlayerStart>(FVector(10000, 0, 100));
+    auto* Knight = F.JoinPlayer(TEXT("Arena Knight"), TEXT("Knight"));
+    auto* Druid = F.JoinPlayer(TEXT("Arena Druid"), TEXT("Druid"));
+    auto* Paladin = F.JoinPlayer(TEXT("Arena Paladin"), TEXT("Paladin"));
+    if (!TestNotNull(TEXT("Knight joined through game mode"), Knight) ||
+        !TestNotNull(TEXT("Druid joined through game mode"), Druid) ||
+        !TestNotNull(TEXT("Paladin joined through game mode"), Paladin)) return false;
+
+    TestEqual(TEXT("First player joins team one"), Knight->GetTeamId(), 1);
+    TestEqual(TEXT("Second player joins team two"), Druid->GetTeamId(), 2);
+    TestEqual(TEXT("Third player joins smaller team"), Paladin->GetTeamId(), 1);
+    State->SetMatchState(MatchState::InProgress);
+    State->SetBattleStartTime(State->GetServerWorldTimeSeconds());
+
+    Druid->SetActorLocation(Knight->GetActorLocation() + FVector(100, 0, 0));
+    Druid->SetInProtectionZone(false);
+    const int32 StartingHealth = Druid->GetCurrentHealth();
+    Knight->ServerSetTarget(Druid);
+    TestTrue(TEXT("Targeting starts a Knight's melee attack"), Druid->GetCurrentHealth() < StartingHealth);
+    TestEqual(TEXT("Target is the selected opponent"), Knight->GetCurrentTarget(), Druid);
+
+    const int32 HealthAfterFirstHit = Druid->GetCurrentHealth();
+    Knight->PerformAutoAttack();
+    TestTrue(TEXT("A subsequent melee swing damages the selected opponent"), Druid->GetCurrentHealth() < HealthAfterFirstHit);
+
+    const int32 AllyHealth = Paladin->GetCurrentHealth();
+    Knight->ServerSetTarget(Paladin);
+    Knight->PerformAutoAttack();
+    TestEqual(TEXT("Same-team melee cannot damage an ally"), Paladin->GetCurrentHealth(), AllyHealth);
+    TestEqual(TEXT("Melee encounter has no score until a death"), State->GetTeamPoints(1), 0);
+    return true;
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFibulaHealth, "Fibula.Gameplay.Combat.HealthManaAndProtection",
     EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 bool FFibulaHealth::RunTest(const FString&)
@@ -146,13 +188,15 @@ bool FFibulaSpells::RunTest(const FString&)
     auto* C = F.Character(EVocation::Sorcerer);
     auto* Enemy = F.Character(EVocation::Knight, 2);
     Enemy->SetActorLocation(C->GetActorLocation() + FVector(100, 0, 0));
-    auto* Spells = F.Spawn<ASpellSystem>();
+    auto* GameState = F.World->GetGameState<AFibulaGameState>();
+    if (!TestNotNull(TEXT("Game state owns the match spell system"), GameState) ||
+        !TestNotNull(TEXT("Spell system initialized by the match"), GameState->GetSpellSystem())) return false;
     const int32 Mana = C->GetCurrentMana();
-    Spells->ServerTryExecuteSpell(C, TEXT("Not A Spell"));
+    C->ServerCastSpell(TEXT("Not A Spell"));
     TestEqual(TEXT("Unknown spell has no cost"), C->GetCurrentMana(), Mana);
-    Spells->ServerTryExecuteSpell(C, TEXT("Berserk"));
+    C->ServerCastSpell(TEXT("Berserk"));
     TestEqual(TEXT("Wrong vocation has no cost"), C->GetCurrentMana(), Mana);
-    Spells->ServerTryExecuteSpell(C, TEXT("Sudden Death Rune"));
+    C->ServerCastSpell(TEXT("Sudden Death Rune"));
     TestEqual(TEXT("Missing target has no cost"), C->GetCurrentMana(), Mana);
     const FGameItem* RuneDefinition = UItemDatabase::GetItem(TEXT("Sudden Death Rune"));
     if (!TestNotNull(TEXT("Rune definition loaded"), RuneDefinition)) return false;
@@ -162,7 +206,7 @@ bool FFibulaSpells::RunTest(const FString&)
     TestTrue(TEXT("Rune can be placed in inventory"), C->AddItem(Runes));
     C->ServerSetTarget(Enemy);
     const int32 EnemyHealth = Enemy->GetCurrentHealth();
-    Spells->ServerTryExecuteSpell(C, TEXT("Sudden Death Rune"));
+    C->ServerUseItem(Runes, FVector::ZeroVector);
     TestTrue(TEXT("Targeted rune damages its target"), Enemy->GetCurrentHealth() < EnemyHealth);
     TestEqual(TEXT("Successful rune consumes one charge"), C->GetItemCount(Runes.Name), 1);
     TestEqual(TEXT("Zero-mana rune leaves mana unchanged"), C->GetCurrentMana(), Mana);
@@ -170,15 +214,15 @@ bool FFibulaSpells::RunTest(const FString&)
     C->SetOffensiveExhaust(false);
     C->ServerModifyHealth(-300);
     const int32 Health = C->GetCurrentHealth();
-    Spells->ServerTryExecuteSpell(C, TEXT("Ultimate Healing"));
+    C->ServerCastSpell(TEXT("Ultimate Healing"));
     TestTrue(TEXT("Healing changes health"), C->GetCurrentHealth() > Health);
     TestEqual(TEXT("Successful support cast costs mana once"), C->GetCurrentMana(), Mana - 100);
     TestTrue(TEXT("Successful cast exhausts"), C->IsGenerallyExhausted());
-    Spells->ServerTryExecuteSpell(C, TEXT("Ultimate Healing"));
+    C->ServerCastSpell(TEXT("Ultimate Healing"));
     TestEqual(TEXT("Exhausted cast costs nothing"), C->GetCurrentMana(), Mana - 100);
     C->SetGeneralExhaust(false);
     C->ModifyMana(-C->GetCurrentMana());
-    Spells->ServerTryExecuteSpell(C, TEXT("Ultimate Healing"));
+    C->ServerCastSpell(TEXT("Ultimate Healing"));
     TestEqual(TEXT("Insufficient mana stays at zero"), C->GetCurrentMana(), 0);
     TestFalse(TEXT("Rejected cast does not exhaust"), C->IsGenerallyExhausted());
     return true;
@@ -206,6 +250,38 @@ bool FFibulaTeamScore::RunTest(const FString&)
     State->OnPlayerDeath(2);
     TestEqual(TEXT("No post-match score"), State->GetTeamPoints(1), 2);
     TestFalse(TEXT("Ended match is inactive"), State->IsBattleActive());
+    return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFibulaTeamSupportEncounter, "Fibula.Interactions.TeamBattle.HealFriend",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+bool FFibulaTeamSupportEncounter::RunTest(const FString&)
+{
+    FibulaTests::FTestWorld F(AFibulaTeamBattleGameMode::StaticClass());
+    F.Spawn<APlayerStart>(FVector(0, 0, 100));
+    F.Spawn<APlayerStart>(FVector(10000, 0, 100));
+    auto* Knight = F.JoinPlayer(TEXT("Enemy Knight"), TEXT("Knight"));
+    auto* Druid = F.JoinPlayer(TEXT("Team Druid"), TEXT("Druid"));
+    auto* Paladin = F.JoinPlayer(TEXT("Team Paladin"), TEXT("Paladin"));
+    auto* Sorcerer = F.JoinPlayer(TEXT("Team Sorcerer"), TEXT("Sorcerer"));
+    if (!TestNotNull(TEXT("Enemy player joined"), Knight) ||
+        !TestNotNull(TEXT("Druid joined"), Druid) ||
+        !TestNotNull(TEXT("Paladin joined"), Paladin) ||
+        !TestNotNull(TEXT("Sorcerer joined"), Sorcerer)) return false;
+
+    TestEqual(TEXT("Healer and recipient join same team"), Druid->GetTeamId(), Sorcerer->GetTeamId());
+    TestEqual(TEXT("Enemy joins the opposite team"), Knight->GetTeamId(), Paladin->GetTeamId());
+    Sorcerer->ServerModifyHealth(-(Sorcerer->GetMaxHealth() / 2), Knight);
+    const int32 WoundedHealth = Sorcerer->GetCurrentHealth();
+    const int32 DruidMana = Druid->GetCurrentMana();
+
+    Druid->ServerCastSpell(TEXT("Heal Friend"));
+    TestEqual(TEXT("Heal Friend needs an explicit ally target"), Druid->GetCurrentMana(), DruidMana);
+    Druid->ServerSetHealingTarget(Sorcerer);
+    Druid->ServerCastSpell(TEXT("Heal Friend"));
+    TestTrue(TEXT("Targeted support spell heals a wounded teammate"), Sorcerer->GetCurrentHealth() > WoundedHealth);
+    TestEqual(TEXT("Team healing charges mana once"), Druid->GetCurrentMana(), DruidMana - 140);
+    TestEqual(TEXT("Healing leaves the opposing player unchanged"), Knight->GetCurrentHealth(), Knight->GetMaxHealth());
     return true;
 }
 

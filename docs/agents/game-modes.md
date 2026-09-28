@@ -80,7 +80,10 @@ Measure results for both teams and all vocations, not just aggregate win rate.
 4. Add rule tests plus a dedicated-server lifecycle scenario that checks both
    clients' scores/outcome, cleanup, persistence, and the next match.
 
-Planned tests: assignment invariants, policy matrix, spawn ownership, scoring exactly
-once, time/score endings, draws, reward eligibility, late joins, and repeated rounds.
-No Unreal mode automation is checked in yet. The FFA header's self-healing-only
-comment contradicts its permissive implementation; see [known gaps](known-gaps.md).
+Native mode/mechanics coverage now includes balanced assignment through actual player
+initialization, an opponent melee encounter, friendly-fire rejection, death scoring,
+respawn protection, active-match score gating, and countdown boundaries. Remaining
+gaps include map-backed spawn ownership, actual replicated clients, draw and reward
+eligibility, match cleanup, reconnects, and repeated rounds. Forty-actor assignment
+is not a 40-connection capacity test. The FFA header's self-healing-only comment
+contradicts its permissive implementation; see [known gaps](known-gaps.md).

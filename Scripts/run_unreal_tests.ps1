@@ -39,10 +39,11 @@ try {
     if (-not $reportFile) { throw "Unreal Automation did not export a JSON report: $reportPath" }
 
     $report = Get-Content -LiteralPath $reportFile -Raw | ConvertFrom-Json
-    if ($report.succeeded -lt 1 -or $report.failed -ne 0 -or $report.notRun -ne 0) {
-        throw "Unreal Automation report is not clean (passed=$($report.succeeded), failed=$($report.failed), notRun=$($report.notRun)); see $reportFile"
+    $passed = $report.succeeded + $report.succeededWithWarnings
+    if ($passed -lt 1 -or $report.failed -ne 0 -or $report.notRun -ne 0) {
+        throw "Unreal Automation report is not clean (passed=$passed, failed=$($report.failed), notRun=$($report.notRun)); see $reportFile"
     }
-    Write-Output "Unreal Automation passed $($report.succeeded) tests. Report: $reportFile"
+    Write-Output "Unreal Automation passed $passed/$($report.tests.Count) tests ($($report.succeeded) clean, $($report.succeededWithWarnings) with warnings). Report: $reportFile"
 }
 finally {
     Pop-Location

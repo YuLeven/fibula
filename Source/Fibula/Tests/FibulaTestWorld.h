@@ -9,8 +9,8 @@
 #include "FibulaGameMode.h"
 #include "FibulaGameState.h"
 
-// Real production actors in an isolated authority world. We intentionally do not
-// BeginPlay the world: unit scenarios must not start HTTP reporting or the match loop.
+// Real production actors in an isolated authority world. Simple rule tests skip
+// BeginPlay; interaction fixtures explicitly start the real mode/world lifecycle.
 namespace FibulaTests
 {
 class FTestWorld
@@ -36,11 +36,16 @@ public:
             URL.AddOption(*FString::Printf(TEXT("game=%s"), *ModeClass->GetPathName()));
             check(World->SetGameMode(URL));
             World->InitializeActorsForPlay(URL);
+            World->BeginPlay();
         }
     }
 
     ~FTestWorld()
     {
+        if (World->HasBegunPlay())
+        {
+            World->EndPlay(EEndPlayReason::Quit);
+        }
         GEngine->DestroyWorldContext(World);
         World->DestroyWorld(false);
     }
@@ -58,6 +63,19 @@ public:
         Result->SetVocation(Vocation);
         Result->SetTeamId(Team);
         Result->InitializeCharacterStats();
+        Result->SetInProtectionZone(false);
+        return Result;
+    }
+
+    AFibulaCharacter* JoinPlayer(const FString& PlayerName, const FString& Vocation)
+    {
+        AFibulaGameMode* Mode = World->GetAuthGameMode<AFibulaGameMode>();
+        if (!Mode) return nullptr;
+
+        auto* Result = Spawn<AFibulaCharacter>();
+        auto* Controller = Spawn<APlayerController>();
+        Controller->Possess(Result);
+        Mode->InitializePlayerCharacter(Controller, PlayerName, Vocation);
         Result->SetInProtectionZone(false);
         return Result;
     }

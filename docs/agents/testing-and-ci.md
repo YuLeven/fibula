@@ -18,10 +18,13 @@ a coverage percentage. The review did not execute the suite.
 
 The repository now has a Phoenix test workflow at
 `.github/workflows/backend-tests.yml` and native Unreal Automation tests under
-`Source/Fibula/Tests/`. No dedicated networked multiplayer smoke, replication, or
-40-player load harness exists yet. The actor tests run in a local authority world;
-they do not establish client/server replication, Blueprint health, end-to-end
-persistence, or capacity.
+`Source/Fibula/Tests/`. The 25 native cases include a real mode-initialized encounter:
+three players join, the Knight targets and swings at an opponent, repeat melee damage
+is applied, and the mode rejects an attack against an ally. Other interaction tests
+route rune use and ally healing through character server actions and verify resulting
+health, mana, inventory, death, score, and respawn state. These run in a local authority
+world; no dedicated networked multiplayer smoke, replication, Blueprint health,
+end-to-end persistence, or 40-player load harness exists yet.
 
 ## Commands available now
 
