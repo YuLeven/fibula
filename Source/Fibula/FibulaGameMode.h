@@ -38,6 +38,9 @@ public:
 #if !UE_BUILD_SHIPPING
 	void RecordAutomationBotDamage(int32 DamageAmount);
 #endif
+#if WITH_DEV_AUTOMATION_TESTS
+	void DisableBotsForAutomationTests() { bEnableServerBots = false; }
+#endif
 
 protected:
 	UPROPERTY(EditAnywhere, Config, Category = "Bots")

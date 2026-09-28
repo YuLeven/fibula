@@ -193,15 +193,27 @@ void AFibulaBotController::Think()
 	AFibulaCharacter *BestTarget = FindBestTarget();
 	if (CurrentTarget.IsValid() && IsValidEnemy(CurrentTarget.Get()))
 	{
-		const float CurrentDistance = FVector::Distance(Bot->GetActorLocation(), CurrentTarget->GetActorLocation());
-		const float BestDistance = BestTarget
-			? FVector::Distance(Bot->GetActorLocation(), BestTarget->GetActorLocation())
-			: TNumericLimits<float>::Max();
 
-		// Avoid switching targets for small distance differences; this makes fights readable.
-		if (!BestTarget || CurrentTarget == BestTarget || BestDistance + 650.0f >= CurrentDistance)
+		// Keep human targets over bots in FFA, even when the bot is already fighting
+		// a nearby bot. Apply distance hysteresis only within the same target class.
+		if (!BestTarget)
 		{
 			BestTarget = CurrentTarget.Get();
+		}
+		else if (!CurrentTarget->IsBot() && BestTarget->IsBot())
+		{
+			BestTarget = CurrentTarget.Get();
+		}
+		else if (CurrentTarget->IsBot() == BestTarget->IsBot())
+		{
+			const float CurrentDistance = FVector::Distance(Bot->GetActorLocation(), CurrentTarget->GetActorLocation());
+			const float BestDistance = FVector::Distance(Bot->GetActorLocation(), BestTarget->GetActorLocation());
+
+			// Avoid switching targets for small distance differences; this makes fights readable.
+			if (CurrentTarget == BestTarget || BestDistance + 650.0f >= CurrentDistance)
+			{
+				BestTarget = CurrentTarget.Get();
+			}
 		}
 	}
 

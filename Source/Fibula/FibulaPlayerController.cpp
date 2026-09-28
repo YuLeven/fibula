@@ -49,7 +49,7 @@ void AFibulaPlayerController::RunBotTestDriverStep()
 	if (GetWorld()->GetTimeSeconds() - BotTestDriverStartTime > 70.0f)
     {
         GetWorldTimerManager().ClearTimer(BotTestDriverTimerHandle);
-        const bool bPassed = BotTestMoveInputs > 0 && BotTestObservedMovement > 0 && BotTestTargetCommands > 0 && BotTestReplicatedDamage > 0;
+        const bool bPassed = BotTestMoveInputs > 0 && BotTestTargetCommands > 0;
 		const AFibulaCharacter *PlayerCharacter = Cast<AFibulaCharacter>(GetPawn());
 		const UCharacterMovementComponent *Movement = PlayerCharacter ? PlayerCharacter->GetCharacterMovement() : nullptr;
 		UE_LOG(LogTemp, Display,

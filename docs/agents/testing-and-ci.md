@@ -37,13 +37,14 @@ With a UE 5.5 source engine available, run from the repository root:
     .\scripts\test_bots.ps1 -Mode FFA
 
 The script builds FibulaEditor, FibulaClient, and FibulaServer, starts the
-Ankrahmun dedicated server, then joins two clients. The driver client walks toward
-an opposing bot, targets it, and attacks; the observer verifies a second connection.
-The server reports PASS only after bots acquire targets, issue movement and combat
-actions, make measured progress, and deal bot-attributed health damage. The driver client also requires its movement, target input, and replicated incoming damage to be observed. Logs are retained under the local
-temporary directory and included on failure.
+Ankrahmun dedicated server, then joins two test clients. Both clients send movement
+and targeting input toward opposing bots. The server reports PASS only after bots
+acquire targets, issue movement and combat actions, make measured progress, and deal
+bot-attributed health damage after staging. Both clients must report their inputs, and
+at least one must observe replicated incoming damage. Logs are retained under the
+local temporary directory and included on failure.
 
--FibulaBotTest is development-only. It creates disposable test characters, skips
+`-FibulaBotTest` is development-only. It creates disposable test characters, skips
 the server status HTTP reporter, and suppresses item persistence; Shipping builds
 do not include this test login path. The script uses no Phoenix account or production
 credentials. Use -TimeoutSeconds to allow slower editor startup. This is a focused

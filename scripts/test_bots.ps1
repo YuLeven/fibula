@@ -38,7 +38,7 @@ $logRoot = Join-Path $env:TEMP "FibulaBotTest_$timestamp"
 New-Item -ItemType Directory -Path $logRoot -Force | Out-Null
 $serverLog = Join-Path $logRoot "server.log"
 $driverLog = Join-Path $logRoot "driver-client.log"
-$observerLog = Join-Path $logRoot "observer-client.log"
+$secondClientLog = Join-Path $logRoot "second-client.log"
 $processes = [System.Collections.Generic.List[System.Diagnostics.Process]]::new()
 
 try {
@@ -96,45 +96,55 @@ try {
     $processes.Add($driver)
 
     Start-Sleep -Seconds 2
-    $observerArguments = @(
+    $secondClientArguments = @(
         $projectFile,
         "127.0.0.1:7777",
         "-game",
         "-log",
         "-unattended",
-        "-abslog=$observerLog"
+        "-abslog=$secondClientLog",
+        "-FibulaBotTestDriver"
     )
-    $observer = Start-Process -FilePath $editorExe -ArgumentList $observerArguments -WorkingDirectory $repositoryRoot -WindowStyle Hidden -PassThru
-    $processes.Add($observer)
+    $secondClient = Start-Process -FilePath $editorExe -ArgumentList $secondClientArguments -WorkingDirectory $repositoryRoot -WindowStyle Hidden -PassThru
+    $processes.Add($secondClient)
 
     $testDeadline = [DateTime]::UtcNow.AddSeconds($TimeoutSeconds)
     $serverPassed = $false
-    $clientPassed = $false
+    $driverPassed = $false
+    $secondClientPassed = $false
     $clientFailed = $false
     while ([DateTime]::UtcNow -lt $testDeadline) {
-        if (Test-Path $serverLog) {
-            $serverText = Get-Content $serverLog -Raw
-            if ($serverText -match "FIBULA_BOT_TEST_RESULT FAIL") {
-                throw "Server bot assertions failed. Logs: $logRoot"
-            }
-            $serverPassed = $serverText -match "FIBULA_BOT_TEST_RESULT PASS"
+        $serverText = if (Test-Path $serverLog) { Get-Content $serverLog -Raw } else { '' }
+        if ($serverText -match "FIBULA_BOT_TEST_RESULT FAIL") {
+            throw "Server bot assertions failed. Logs: $logRoot"
         }
-        if (Test-Path $driverLog) {
-            $driverText = Get-Content $driverLog -Raw
-            if ($driverText -match "FIBULA_BOT_TEST_CLIENT_RESULT FAIL") {
-                $clientFailed = $true
+        $serverPassed = $serverText -match "FIBULA_BOT_TEST_RESULT PASS"
+
+        $driverText = if (Test-Path $driverLog) { Get-Content $driverLog -Raw } else { '' }
+        $secondClientText = if (Test-Path $secondClientLog) { Get-Content $secondClientLog -Raw } else { '' }
+        $driverPassed = $driverText -match "FIBULA_BOT_TEST_CLIENT_RESULT PASS"
+        $secondClientPassed = $secondClientText -match "FIBULA_BOT_TEST_CLIENT_RESULT PASS"
+        $clientFailed = $driverText -match "FIBULA_BOT_TEST_CLIENT_RESULT FAIL" -or
+            $secondClientText -match "FIBULA_BOT_TEST_CLIENT_RESULT FAIL"
+
+        $clientDamageObserved = $false
+        foreach ($clientText in @($driverText, $secondClientText)) {
+            if ($clientText -match 'FIBULA_BOT_TEST_CLIENT_RESULT PASS .*?ReplicatedDamage=(\d+)' -and [int]$Matches[1] -gt 0) {
+                $clientDamageObserved = $true
+                break
             }
-            $clientPassed = $driverText -match "FIBULA_BOT_TEST_CLIENT_RESULT PASS"
         }
-        if ($serverPassed -and $clientPassed) {
+
+        if ($serverPassed -and $driverPassed -and $secondClientPassed -and $clientDamageObserved) {
             Write-Host "PASS: $Mode bot multiplayer smoke test"
+            Write-Host "Both clients interacted; bot damage was observed on a client."
             Write-Host "Server and client logs: $logRoot"
             exit 0
         }
-        if ($serverPassed -and $clientFailed) {
-            throw "Client interaction assertions failed after server bot assertions passed. Logs: $logRoot"
+        if ($clientFailed) {
+            throw "A client could not complete its movement and target actions. Logs: $logRoot"
         }
-        if ($server.HasExited -or $driver.HasExited -or $observer.HasExited) {
+        if ($server.HasExited -or $driver.HasExited -or $secondClient.HasExited) {
             throw "A test process exited before the assertions completed. Logs: $logRoot"
         }
         Start-Sleep -Seconds 1
@@ -151,6 +161,10 @@ catch {
     if (Test-Path $driverLog) {
         Write-Host "--- driver-client.log (last 60 lines) ---"
         Get-Content $driverLog -Tail 60
+    }
+    if (Test-Path $secondClientLog) {
+        Write-Host "--- second-client.log (last 60 lines) ---"
+        Get-Content $secondClientLog -Tail 60
     }
     exit 1
 }

@@ -965,6 +965,9 @@ void AFibulaGameMode::StageAutomationBotTestPlayers()
 		return;
 	}
 
+	// Restrict this metric to bot damage after both test players are staged.
+	AutomationBotDamage = 0;
+
 	for (TActorIterator<AFibulaCharacter> HumanIt(GetWorld()); HumanIt; ++HumanIt)
 	{
 		AFibulaCharacter *Human = *HumanIt;

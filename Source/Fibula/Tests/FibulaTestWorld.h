@@ -35,6 +35,10 @@ public:
             FURL URL;
             URL.AddOption(*FString::Printf(TEXT("game=%s"), *ModeClass->GetPathName()));
             check(World->SetGameMode(URL));
+            if (AFibulaGameMode* Mode = World->GetAuthGameMode<AFibulaGameMode>())
+            {
+                Mode->DisableBotsForAutomationTests();
+            }
             World->InitializeActorsForPlay(URL);
             World->BeginPlay();
         }
