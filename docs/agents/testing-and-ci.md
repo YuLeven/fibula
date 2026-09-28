@@ -16,10 +16,12 @@ a coverage percentage. The review did not execute the suite.
 | Browser auth/session/account LiveViews | `fibula_site_web/user_auth_test.exs`, user session/controller and `live/user_*` tests |
 | Character page and basic HTML/JSON | `live/character_details_live_test.exs` under `fibula_site_web/`, plus controller tests |
 
-No GitHub Actions workflows or Unreal Automation/Functional Test/Gauntlet test
-implementations were found in tracked source/config. No dedicated multiplayer smoke
-or 40-player load harness was found. Existing backend tests do not demonstrate
-combat balance, Unreal replication, Blueprint health, or end-to-end persistence.
+The repository now has a Phoenix test workflow at
+`.github/workflows/backend-tests.yml` and native Unreal Automation tests under
+`Source/Fibula/Tests/`. No dedicated networked multiplayer smoke, replication, or
+40-player load harness exists yet. The actor tests run in a local authority world;
+they do not establish client/server replication, Blueprint health, end-to-end
+persistence, or capacity.
 
 ## Commands available now
 
@@ -40,10 +42,23 @@ not honor development's `DB_HOST`; configure containerized tests deliberately.
 Do not hide unrelated baseline format/test failures with broad rewrites or skipped
 assertions. See [test guidance](../../fibula_site/test/AGENTS.md).
 
-For Unreal builds, use [Source/AGENTS.md](../../Source/AGENTS.md) with a verified UE
-source installation. Build the affected Editor/Client/Server targets. There is no
-existing Fibula Unreal test command to claim as passing; implement and verify the
-test harness before documenting its invocation as an available workflow.
+The repository-wide `mix format --check-formatted` currently fails on existing
+backend files. CI does not use it as a gate so its first run can validate compilation
+and behavior without requiring unrelated formatting changes.
+
+For Unreal gameplay changes, run the authority-world automation suite with a verified
+UE 5.5 installation from the repository root:
+
+```powershell
+.\Scripts\run_unreal_tests.ps1 -EngineRoot 'D:\Game\UnrealEngine'
+```
+
+The runner builds `FibulaEditor`, runs every `Fibula.*` automation test headlessly,
+and fails if the engine exits unsuccessfully or reports failed/not-run tests. Reports
+and logs are written under ignored `Saved/Tests/`. For shared runtime changes, also
+build affected Client/Server targets using [Source/AGENTS.md](../../Source/AGENTS.md).
+The Unreal runner requires a provisioned UE 5.5 engine and project assets; the hosted
+backend workflow cannot substitute for it.
 
 ## Required test design for changes
 
